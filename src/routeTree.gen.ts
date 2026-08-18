@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as FarmRouteImport } from './routes/farm'
+import { Route as InventoryRouteImport } from './routes/inventory'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as ItemSlugRouteImport } from './routes/item.$slug'
 
@@ -22,6 +23,11 @@ const IndexRoute = IndexRouteImport.update({
 const FarmRoute = FarmRouteImport.update({
   id: '/farm',
   path: '/farm',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InventoryRoute = InventoryRouteImport.update({
+  id: '/inventory',
+  path: '/inventory',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SearchRoute = SearchRouteImport.update({
@@ -38,12 +44,14 @@ const ItemSlugRoute = ItemSlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/farm': typeof FarmRoute
+  '/inventory': typeof InventoryRoute
   '/search': typeof SearchRoute
   '/item/$slug': typeof ItemSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/farm': typeof FarmRoute
+  '/inventory': typeof InventoryRoute
   '/search': typeof SearchRoute
   '/item/$slug': typeof ItemSlugRoute
 }
@@ -51,20 +59,22 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/farm': typeof FarmRoute
+  '/inventory': typeof InventoryRoute
   '/search': typeof SearchRoute
   '/item/$slug': typeof ItemSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/farm' | '/search' | '/item/$slug'
+  fullPaths: '/' | '/farm' | '/inventory' | '/search' | '/item/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/farm' | '/search' | '/item/$slug'
-  id: '__root__' | '/' | '/farm' | '/search' | '/item/$slug'
+  to: '/' | '/farm' | '/inventory' | '/search' | '/item/$slug'
+  id: '__root__' | '/' | '/farm' | '/inventory' | '/search' | '/item/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   FarmRoute: typeof FarmRoute
+  InventoryRoute: typeof InventoryRoute
   SearchRoute: typeof SearchRoute
   ItemSlugRoute: typeof ItemSlugRoute
 }
@@ -83,6 +93,13 @@ declare module '@tanstack/react-router' {
       path: '/farm'
       fullPath: '/farm'
       preLoaderRoute: typeof FarmRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/inventory': {
+      id: '/inventory'
+      path: '/inventory'
+      fullPath: '/inventory'
+      preLoaderRoute: typeof InventoryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/search': {
@@ -105,6 +122,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   FarmRoute: FarmRoute,
+  InventoryRoute: InventoryRoute,
   SearchRoute: SearchRoute,
   ItemSlugRoute: ItemSlugRoute,
 }
