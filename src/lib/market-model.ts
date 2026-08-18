@@ -24,13 +24,13 @@ export const ACTIVITY_LABELS: Record<ActivityType, string> = {
 export type ItemSnapshot = {
   slug: string;
   name: string;
-  thumb?: string;
+  thumb?: string | undefined;
   tags: string[];
   category: string;
   activity: ActivityType;
   isSet: boolean;
   isComponent: boolean;
-  ducats?: number;
+  ducats?: number | undefined;
   /** Highest active BUY order — what a buyer will pay you right now. */
   highestBuy: number | null;
   /** Lowest active SELL order — what sellers are asking. */
@@ -44,7 +44,7 @@ export type ItemSnapshot = {
   activity24h: number;
   fetchedAt: number;
   stale: boolean;
-  error?: string;
+  error?: string | undefined;
 };
 
 /* ---------------- Farm time estimates ---------------- */
