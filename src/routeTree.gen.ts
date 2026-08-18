@@ -10,12 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as FarmRouteImport } from './routes/farm'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as ItemSlugRouteImport } from './routes/item.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FarmRoute = FarmRouteImport.update({
+  id: '/farm',
+  path: '/farm',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SearchRoute = SearchRouteImport.update({
@@ -31,30 +37,34 @@ const ItemSlugRoute = ItemSlugRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/farm': typeof FarmRoute
   '/search': typeof SearchRoute
   '/item/$slug': typeof ItemSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/farm': typeof FarmRoute
   '/search': typeof SearchRoute
   '/item/$slug': typeof ItemSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/farm': typeof FarmRoute
   '/search': typeof SearchRoute
   '/item/$slug': typeof ItemSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/search' | '/item/$slug'
+  fullPaths: '/' | '/farm' | '/search' | '/item/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/search' | '/item/$slug'
-  id: '__root__' | '/' | '/search' | '/item/$slug'
+  to: '/' | '/farm' | '/search' | '/item/$slug'
+  id: '__root__' | '/' | '/farm' | '/search' | '/item/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  FarmRoute: typeof FarmRoute
   SearchRoute: typeof SearchRoute
   ItemSlugRoute: typeof ItemSlugRoute
 }
@@ -66,6 +76,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/farm': {
+      id: '/farm'
+      path: '/farm'
+      fullPath: '/farm'
+      preLoaderRoute: typeof FarmRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/search': {
@@ -87,6 +104,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  FarmRoute: FarmRoute,
   SearchRoute: SearchRoute,
   ItemSlugRoute: ItemSlugRoute,
 }
