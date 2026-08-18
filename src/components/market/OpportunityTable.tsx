@@ -50,6 +50,7 @@ export function OpportunityTable({
                 </Link>
                 <div className="text-[11px] text-muted-foreground">
                   {r.snap.isSet ? "Complete set" : r.snap.isComponent ? "Single component" : "Single item"}
+                  {r.snap.focusRank !== null ? ` · rank ${r.snap.focusRank}` : ""}
                   {r.snap.error ? <span className="text-destructive"> · {r.snap.error}</span> : null}
                 </div>
               </td>

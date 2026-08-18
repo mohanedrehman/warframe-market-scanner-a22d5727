@@ -73,6 +73,9 @@ function ItemPage() {
                   ? "This is a SINGLE COMPONENT, not the complete set."
                   : "Single tradable item."}
               {snapshot.ducats ? ` · ${snapshot.ducats} ducats` : ""}
+              {snapshot.focusRank !== null
+                ? ` · prices shown for rank ${snapshot.focusRank} (the rank most buyers are asking for)`
+                : ""}
             </p>
           </div>
           <div className="flex flex-col items-end gap-2">
@@ -109,6 +112,7 @@ function ItemPage() {
       <div className="panel clip-corner mt-6 p-5">
         <h2 className="text-lg font-semibold">Interpretation</h2>
         <p className="mt-2 text-sm text-muted-foreground">{row.score.reason}</p>
+        {snapshot.rankNote ? <p className="mt-1 text-xs text-warning">{snapshot.rankNote}</p> : null}
         <div className="mt-4 flex flex-wrap items-end gap-4 text-sm">
           <label className="text-xs text-muted-foreground">
             Your farm-time estimate (minutes)
@@ -179,6 +183,7 @@ type OrderRow = {
   id: string;
   platinum: number;
   quantity: number;
+  rank?: number | undefined;
   user: { ingameName: string; status: string; reputation: number };
 };
 
@@ -196,7 +201,10 @@ function OrderList({ title, orders, tone }: { title: string; orders: OrderRow[];
                 }`}
               />
               <span>{o.user.ingameName}</span>
-              <span className="text-xs text-muted-foreground">{o.user.status}</span>
+              <span className="text-xs text-muted-foreground">
+                {o.user.status}
+                {typeof o.rank === "number" ? ` · rank ${o.rank}` : ""}
+              </span>
             </span>
             <span className={`tabular font-semibold ${tone}`}>
               {formatPlat(o.platinum)} <span className="text-xs text-muted-foreground">×{o.quantity}</span>

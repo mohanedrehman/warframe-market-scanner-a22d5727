@@ -137,6 +137,10 @@ function Dashboard() {
       </section>
 
       <section>
+        <p className="mb-3 text-xs text-muted-foreground">
+          Torid and Dual Toxocyst are not tradable as items — their value is in Riven auctions, so they are tracked on
+          the <Link to="/rivens" className="text-primary hover:underline">Riven page</Link> instead.
+        </p>
         <div className="mb-3 flex flex-wrap items-end justify-between gap-2">
           <h2 className="text-lg font-semibold">Watchlist opportunities</h2>
           <p className="text-xs text-muted-foreground">Vault status: {VAULT_CURATED_NOTE}</p>
