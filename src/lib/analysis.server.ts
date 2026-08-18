@@ -58,12 +58,21 @@ export function topOrders(orders: WfmOrder[]) {
   return { buy, sell };
 }
 
+/** Item metadata comes from the single cached /v2/items list to halve request count. */
+async function metaFor(slug: string) {
+  const { items } = await getAllItems();
+  const short = items.find((i) => i.slug === slug);
+  if (short) return { tags: short.tags ?? [], i18n: short.i18n?.["en"], ducats: undefined as number | undefined };
+  const { item } = await getItem(slug);
+  return { tags: item.tags ?? [], i18n: item.i18n?.["en"], ducats: item.ducats };
+}
+
 export async function snapshotFor(slug: string): Promise<ItemSnapshot> {
   try {
-    const [{ item }, { orders, fetchedAt, stale }] = await Promise.all([getItem(slug), getOrders(slug)]);
-    const tags = item.tags ?? [];
+    const [meta, { orders, fetchedAt, stale }] = await Promise.all([metaFor(slug), getOrders(slug)]);
+    const tags = meta.tags;
     const { category, activity } = classify(tags, slug);
-    const i18n = item.i18n?.["en"];
+    const i18n = meta.i18n;
     return {
       slug,
       name: i18n?.name ?? slug,
@@ -73,7 +82,7 @@ export async function snapshotFor(slug: string): Promise<ItemSnapshot> {
       activity,
       isSet: tags.includes("set"),
       isComponent: !tags.includes("set") && (tags.includes("component") || tags.includes("blueprint")),
-      ducats: item.ducats,
+      ducats: meta.ducats,
       ...summarise(orders),
       fetchedAt,
       stale,
