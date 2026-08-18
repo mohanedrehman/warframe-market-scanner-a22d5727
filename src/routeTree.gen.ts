@@ -10,33 +10,91 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as FarmRouteImport } from './routes/farm'
+import { Route as InventoryRouteImport } from './routes/inventory'
+import { Route as RivensRouteImport } from './routes/rivens'
+import { Route as SearchRouteImport } from './routes/search'
+import { Route as ItemSlugRouteImport } from './routes/item.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FarmRoute = FarmRouteImport.update({
+  id: '/farm',
+  path: '/farm',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InventoryRoute = InventoryRouteImport.update({
+  id: '/inventory',
+  path: '/inventory',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RivensRoute = RivensRouteImport.update({
+  id: '/rivens',
+  path: '/rivens',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ItemSlugRoute = ItemSlugRouteImport.update({
+  id: '/item/$slug',
+  path: '/item/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/farm': typeof FarmRoute
+  '/inventory': typeof InventoryRoute
+  '/rivens': typeof RivensRoute
+  '/search': typeof SearchRoute
+  '/item/$slug': typeof ItemSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/farm': typeof FarmRoute
+  '/inventory': typeof InventoryRoute
+  '/rivens': typeof RivensRoute
+  '/search': typeof SearchRoute
+  '/item/$slug': typeof ItemSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/farm': typeof FarmRoute
+  '/inventory': typeof InventoryRoute
+  '/rivens': typeof RivensRoute
+  '/search': typeof SearchRoute
+  '/item/$slug': typeof ItemSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    '/' | '/farm' | '/inventory' | '/rivens' | '/search' | '/item/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/farm' | '/inventory' | '/rivens' | '/search' | '/item/$slug'
+  id:
+    | '__root__'
+    | '/'
+    | '/farm'
+    | '/inventory'
+    | '/rivens'
+    | '/search'
+    | '/item/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  FarmRoute: typeof FarmRoute
+  InventoryRoute: typeof InventoryRoute
+  RivensRoute: typeof RivensRoute
+  SearchRoute: typeof SearchRoute
+  ItemSlugRoute: typeof ItemSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +106,51 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/farm': {
+      id: '/farm'
+      path: '/farm'
+      fullPath: '/farm'
+      preLoaderRoute: typeof FarmRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/inventory': {
+      id: '/inventory'
+      path: '/inventory'
+      fullPath: '/inventory'
+      preLoaderRoute: typeof InventoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rivens': {
+      id: '/rivens'
+      path: '/rivens'
+      fullPath: '/rivens'
+      preLoaderRoute: typeof RivensRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/item/$slug': {
+      id: '/item/$slug'
+      path: '/item/$slug'
+      fullPath: '/item/$slug'
+      preLoaderRoute: typeof ItemSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  FarmRoute: FarmRoute,
+  InventoryRoute: InventoryRoute,
+  RivensRoute: RivensRoute,
+  SearchRoute: SearchRoute,
+  ItemSlugRoute: ItemSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -10,6 +10,7 @@ import {
 import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 
 function NotFoundComponent() {
@@ -77,11 +78,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "Warframe Market Scanner" },
+      {
+        name: "description",
+        content:
+          "Live Warframe.Market analysis: plat per hour, demand, spread and farm recommendations.",
+      },
+      { property: "og:site_name", content: "Warframe Market Scanner" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@Lovable" },
@@ -92,6 +95,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: appCss,
       },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "preconnect", href: "https://fonts.googleapis.com" },
+      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Rajdhani:wght@600;700&family=JetBrains+Mono:wght@400;600&display=swap",
+      },
     ],
   }),
   shellComponent: RootShell,
@@ -99,6 +108,39 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   notFoundComponent: NotFoundComponent,
   errorComponent: ErrorComponent,
 });
+
+const NAV = [
+  { to: "/", label: "Dashboard" },
+  { to: "/farm", label: "What to farm" },
+  { to: "/search", label: "Search" },
+  { to: "/inventory", label: "My inventory" },
+  { to: "/rivens", label: "Rivens" },
+] as const;
+
+function SiteHeader() {
+  return (
+    <header className="sticky top-0 z-30 border-b border-border bg-background/85 backdrop-blur">
+      <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-6 gap-y-2 px-4 py-3 sm:px-6">
+        <Link to="/" className="font-display text-sm font-bold tracking-[0.2em] text-primary uppercase">
+          WFM Scanner
+        </Link>
+        <nav className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
+          {NAV.map((n) => (
+            <Link
+              key={n.to}
+              to={n.to}
+              activeOptions={{ exact: n.to === "/" }}
+              activeProps={{ className: "text-primary" }}
+              className="text-muted-foreground transition-colors hover:text-foreground"
+            >
+              {n.label}
+            </Link>
+          ))}
+        </nav>
+      </div>
+    </header>
+  );
+}
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
@@ -119,8 +161,19 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <TooltipProvider delayDuration={150}>
+        <div className="flex min-h-screen flex-col">
+          <SiteHeader />
+          <main className="flex-1">
+            {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+            <Outlet />
+          </main>
+          <footer className="border-t border-border px-4 py-6 text-center text-xs text-muted-foreground">
+            Data from the public Warframe.Market API (PC, crossplay). Unofficial fan tool, not affiliated with Digital
+            Extremes. All times shown in UK time.
+          </footer>
+        </div>
+      </TooltipProvider>
     </QueryClientProvider>
   );
 }
