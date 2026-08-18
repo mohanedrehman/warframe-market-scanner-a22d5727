@@ -115,6 +115,7 @@ export type WfmOrder = {
   type: "buy" | "sell";
   platinum: number;
   quantity: number;
+  rank?: number;
   visible: boolean;
   createdAt: string;
   updatedAt: string;

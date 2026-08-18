@@ -13,8 +13,28 @@ const ONLINE = new Set(["ingame", "online"]);
 
 function summarise(orders: WfmOrder[]) {
   const visible = orders.filter((o) => o.visible !== false);
-  const buys = visible.filter((o) => o.type === "buy");
-  const sells = visible.filter((o) => o.type === "sell");
+  const allBuys = visible.filter((o) => o.type === "buy");
+  const allSells = visible.filter((o) => o.type === "sell");
+
+  // Ranked items (mods, arcanes) trade as different goods per rank. Focus on the
+  // rank buyers are actually asking for, and compare like with like.
+  const ranked = visible.some((o) => typeof o.rank === "number");
+  let focusRank: number | null = null;
+  if (ranked && allBuys.length) {
+    const counts = new Map<number, number>();
+    for (const o of allBuys) counts.set(o.rank ?? 0, (counts.get(o.rank ?? 0) ?? 0) + 1);
+    focusRank = [...counts.entries()].sort((a, b) => b[1] - a[1] || b[0] - a[0])[0]![0];
+  }
+
+  const atRank = (o: WfmOrder) => focusRank === null || (o.rank ?? 0) === focusRank;
+  const buys = allBuys.filter(atRank);
+  let sells = allSells.filter(atRank);
+  let rankNote: string | undefined;
+  if (focusRank !== null && sells.length === 0) {
+    sells = allSells;
+    rankNote = `No rank ${focusRank} sellers listed; asking price shown is for other ranks.`;
+  }
+
   const onlineBuys = buys.filter((o) => ONLINE.has(o.user?.status));
   const onlineSells = sells.filter((o) => ONLINE.has(o.user?.status));
 
@@ -41,6 +61,8 @@ function summarise(orders: WfmOrder[]) {
     onlineBuyers: onlineBuys.length,
     onlineSellers: onlineSells.length,
     activity24h,
+    focusRank,
+    rankNote,
   };
 }
 
@@ -104,8 +126,9 @@ export async function snapshotFor(slug: string): Promise<ItemSnapshot> {
       onlineBuyers: 0,
       onlineSellers: 0,
       activity24h: 0,
+      focusRank: null,
       fetchedAt: 0,
-      stale: true,
+      stale: false,
       error: err instanceof Error ? err.message : "Request failed",
     };
   }

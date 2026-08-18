@@ -42,6 +42,9 @@ export type ItemSnapshot = {
   onlineSellers: number;
   /** Orders created/updated in the last 24h — liquidity proxy. */
   activity24h: number;
+  /** Mod/arcane rank the prices refer to (null when the item has no ranks). */
+  focusRank: number | null;
+  rankNote?: string | undefined;
   fetchedAt: number;
   stale: boolean;
   error?: string | undefined;
@@ -76,8 +79,6 @@ export const DEFAULT_ITEM_FARM_MINUTES: Record<string, number> = {
   narrow_minded: 18,
   overextended: 18,
   fleeting_expertise: 18,
-  torid: 25,
-  dual_toxocyst: 25,
 };
 
 export function defaultFarmMinutes(snap: { slug: string; activity: ActivityType }) {
@@ -206,8 +207,6 @@ export const WATCHLIST_SLUGS = [
   "vauban_prime_set",
   "zephyr_prime_set",
   "yareli_prime_blueprint",
-  "torid",
-  "dual_toxocyst",
   "malignant_force",
   "transient_fortitude",
   "blind_rage",
