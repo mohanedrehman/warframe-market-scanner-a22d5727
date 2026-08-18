@@ -155,6 +155,12 @@ export async function searchItems(query: string) {
 
 export async function itemDetail(slug: string) {
   const snapshot = await snapshotFor(slug);
+  try {
+    const { item } = await getItem(slug);
+    snapshot.ducats = item.ducats;
+  } catch {
+    /* metadata is optional */
+  }
   const { orders } = await getOrders(slug).catch(() => ({ orders: [] as WfmOrder[] }));
   let history: { date: string; median: number; avg: number; volume: number }[] = [];
   let historyError: string | null = null;
