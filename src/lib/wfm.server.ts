@@ -136,6 +136,7 @@ export type WfmStatPoint = {
   max_price: number;
   avg_price: number;
   wa_price: number;
+  mod_rank?: number;
   median: number;
 };
 

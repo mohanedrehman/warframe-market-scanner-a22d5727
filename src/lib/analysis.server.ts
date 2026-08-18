@@ -66,8 +66,10 @@ function summarise(orders: WfmOrder[]) {
   };
 }
 
-export function topOrders(orders: WfmOrder[]) {
-  const visible = orders.filter((o) => o.visible !== false);
+export function topOrders(orders: WfmOrder[], focusRank: number | null = null) {
+  const visible = orders.filter(
+    (o) => o.visible !== false && (focusRank === null || (o.rank ?? focusRank) === focusRank),
+  );
   const rank = (o: WfmOrder) => (ONLINE.has(o.user?.status) ? 0 : 1);
   const buy = visible
     .filter((o) => o.type === "buy")
@@ -189,7 +191,11 @@ export async function itemDetail(slug: string) {
   let historyError: string | null = null;
   try {
     const stats = await getStatistics(slug);
-    history = stats.days90.slice(-90).map((p) => ({
+    const rankFiltered =
+      snapshot.focusRank === null
+        ? stats.days90
+        : stats.days90.filter((p) => (p.mod_rank ?? snapshot.focusRank) === snapshot.focusRank);
+    history = (rankFiltered.length ? rankFiltered : stats.days90).slice(-90).map((p) => ({
       date: p.datetime.slice(0, 10),
       median: p.median,
       avg: p.avg_price,
@@ -204,7 +210,7 @@ export async function itemDetail(slug: string) {
 
   return {
     snapshot,
-    orders: topOrders(orders),
+    orders: topOrders(orders, snapshot.focusRank),
     history,
     historyError,
     volume7d,
